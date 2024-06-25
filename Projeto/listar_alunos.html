@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Alunos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container-tabela" style="display: flex; flex-direction: column;">
+        <h1>Lista de Alunos</h1>
+        <table id="alunos">
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Curso</th>
+                <th>Ações</th>
+            </tr>
+        </table>
+        <a href="/Projeto/index.html">
+            <button class="button-home">Inicio</button>
+        </a>
+
+        <script>
+        fetch('read.php')
+            .then(response => response.json())
+            .then(data => {
+                let table = document.getElementById('alunos');
+                data.forEach(rowData => {
+                    let row = document.createElement('tr');
+                    Object.values(rowData).forEach(cellData => {
+                        let cell = document.createElement('td');
+                        cell.appendChild(document.createTextNode(cellData));
+                        row.appendChild(cell);
+                    });
+                    let actions = document.createElement('td');
+                    let editButton = document.createElement('button');
+                    editButton.textContent = 'Editar';
+                    editButton.onclick = function() {
+                        location.href = 'editar_aluno.html?id=' + rowData.id;
+                    };
+                    let deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Excluir';
+                    deleteButton.onclick = function() {
+                        if (confirm('Tem certeza de que deseja excluir este registro?')) {
+                            location.href = 'delete.php?id=' + rowData.id;
+                        }
+                    };
+                    actions.appendChild(editButton);
+                    actions.appendChild(deleteButton);
+                    row.appendChild(actions);
+                    table.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        </script>
+
+    </div>
+</body>
+</html>
